@@ -20,6 +20,7 @@ export GOPROXY=https://goproxy.io
 git clone https://github.com/lokezheng/chat.git
 ```
 
+
 ## 2.项目配置，非常重要
 
 ### 2.1 数据库配置
@@ -83,21 +84,47 @@ http://127.0.0.1:8899/user/login.shtml
 使用go mod 自动处理安装包
 
 ## 4. 操作说明
+```
+win 系统执行 build.bat 一键生成执行文件
+liunx/mac  build.sh  生成执行文件
 
 登录选择GM，可以使用GM命令
-
 1. /stats [username]
 2. /popular n (n为房间Id)
-
+````
 ## 5，引用第三方库
 
 	github.com/aliyun/aliyun-oss-go-sdk 
-	github.com/baiyubin/aliyun-sts-go-sdk      阿里云OSS
+	github.com/baiyubin/aliyun-sts-go-sdk      阿里云OSS存储静态资源
 	github.com/go-sql-driver/mysql        
 	github.com/go-xorm/xorm                     xorm
 	github.com/gorilla/websocket                websocket
 
 	github.com/satori/go.uuid                   uuid
-	github.com/tchap/go-patricia                基数树用与脏词过滤
-	github.com/yanyiwu/gojieba                   中文分词
+	github.com/tchap/go-patricia                基数树用于脏词过滤
+	github.com/yanyiwu/gojieba                   分词处理
 
+## 6.系统扩展性
+````
+1.实现资源标准化编码
+  资源信息菜鸡标准化。转化成content/url
+  资源编码，终极目标都是拼接一个消息体(json/xml)
+  
+ 2.确保消息体的可扩展性
+   兼容基础媒介 如图片文字语音
+   能承载大量新业务，扩展不影响现有业务
+ 
+ 3.服务器负载分析
+   A发图片512K
+   100人在线群人家同时接收512K*100=1024K*50 = 50M
+   1024个群50M*1024 = 50G
+   解决方案
+   可以使用缩略图提高单图下载渲染速度
+   提高资源服务并发能力使用云服务（qos/alioss） 
+   压缩消息体，发送文件路径而不是整个文件
+ 4. 高并发
+    单机并发性能最优
+    海量用户分布式部署
+    应对突发事件弹性扩容  
+    
+````
