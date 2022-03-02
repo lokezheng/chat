@@ -5,7 +5,6 @@ import (
 	"chat/service"
 	"encoding/json"
 	"fmt"
-	"github.com/yanyiwu/gojieba"
 	"log"
 	"net"
 	"net/http"
@@ -242,7 +241,7 @@ func dispatch(data []byte) {
 		if userService.UserInfo.IsAdmin == 1 {
 			//如果是管理员需要判断GM命令
 			content, isAdmin = GMOperation(msg)
-			msg.Content = content
+			msg.Content = service.WildcardReplace(content)
 		} else {
 			msg.Content = service.WildcardReplace(msg.Content)
 		}
@@ -336,20 +335,20 @@ func popularOperation(id int64) string {
 	tmp := messageService.FindMessages(id, CMD_ROOM_MSG)
 	var word string
 	var num int
-	var useHmm = true
+	//var useHmm = true
 	var mapWords = make(map[string]int, 0)
-	var seg = gojieba.NewJieba()
-	defer seg.Free()
+	//	var seg = gojieba.NewJieba()
+	//	defer seg.Free()
 
 	for _, v := range tmp {
-		resWords := seg.Cut(v.Content, useHmm)
-		for _, wk := range resWords {
-			if i, ok := mapWords[wk]; ok {
-				mapWords[wk] = i + 1
-			} else {
-				mapWords[wk] = 1
-			}
+		//resWords := seg.Cut(v.Content, useHmm)
+		//for _, wk := range resWords {
+		if i, ok := mapWords[v.Content]; ok {
+			mapWords[v.Content] = i + 1
+		} else {
+			mapWords[v.Content] = 1
 		}
+		//}
 	}
 	for k, v := range mapWords {
 		if v > num {
